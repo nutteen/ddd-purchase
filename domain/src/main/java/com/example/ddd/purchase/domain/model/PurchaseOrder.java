@@ -50,11 +50,6 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
         addOrderLines(command.getOrderLines());
     }
 
-    public void handle(DeletePurchaseOrderCommand command){
-        checkEditable();
-        // TODO
-    }
-
     public void handle(DeletePurchaseOrderLineCommand command){
         checkEditable();
         if(orderLines.containsKey(command.getLineId())){
@@ -63,6 +58,10 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
         } else {
             throw new IllegalStateException("line id: " + command.getLineId() + " not found in po: " + command.getPoId());
         }
+    }
+
+    public void handle(DeletePurchaseOrderCommand command){
+        checkEditable();
     }
 
     public void handle(EditPurchaseOrderLineCommand command){

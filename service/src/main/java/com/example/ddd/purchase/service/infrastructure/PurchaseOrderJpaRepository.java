@@ -18,6 +18,8 @@ public class PurchaseOrderJpaRepository implements PurchaseOrderRepository {
     @Inject
     PurchaseOrderEntityRepository purchaseOrderEntityRepository;
     @Inject
+    PurchaseOrderLineEntityRepository purchaseOrderLineEntityRepository;
+    @Inject
     EntityManager entityManager;
 
     @Override
@@ -33,7 +35,12 @@ public class PurchaseOrderJpaRepository implements PurchaseOrderRepository {
     @Override
     public void saveAll(Collection<PurchaseOrder> purchaseOrders) {
         for(var purchaseOrder : purchaseOrders){
-            entityManager.merge(purchaseOrder.getState());
+            var state = purchaseOrder.getState();
+            if(state.getVersion() == null){
+                entityManager.persist(state);
+            } else {
+                entityManager.merge(state);
+            }
         }
     }
 
@@ -52,8 +59,13 @@ public class PurchaseOrderJpaRepository implements PurchaseOrderRepository {
 
     @Override
     public void delete(PurchaseOrder purchaseOrder) {
-        // delete aggregate root, cascading to the child
-        purchaseOrderEntityRepository.deleteById(purchaseOrder.getId());
+        var state = purchaseOrder.getState();
+        // delete children
+        for(var purchaseOrderLineEntity : state.getOrderLines()){
+            purchaseOrderLineEntityRepository.deleteById(purchaseOrderLineEntity.getId());
+        }
+        // delete aggregate root
+        purchaseOrderEntityRepository.deleteById(state.getId());
     }
 
     @Override
