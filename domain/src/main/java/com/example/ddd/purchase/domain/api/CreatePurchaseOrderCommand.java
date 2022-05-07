@@ -7,6 +7,7 @@ import java.util.List;
 
 public class CreatePurchaseOrderCommand {
     private String id;
+    private String companyId;
     private BigDecimal limitAmount;
     private List<PurchaseOrderLine> purchaseOrderLines;
 
@@ -16,6 +17,14 @@ public class CreatePurchaseOrderCommand {
 
     public String getId(){
         return id;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
     }
 
     public void setLimitAmount(BigDecimal limitAmount){

@@ -4,16 +4,15 @@ import com.example.ddd.purchase.domain.api.*;
 import com.example.ddd.purchase.domain.model.PurchaseOrder;
 import com.example.ddd.purchase.domain.model.PurchaseOrderLine;
 import com.example.ddd.purchase.domain.model.query.PurchaseOrderDto;
-import com.example.ddd.purchase.domain.model.query.PurchaseOrderLineDto;
 import com.example.ddd.purchase.domain.repository.PurchaseOrderRepository;
+import io.micronaut.data.model.Pageable;
+import io.micronaut.data.model.Slice;
+import io.micronaut.data.model.Sort;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 @Singleton
@@ -26,12 +25,12 @@ public class PurchaseOrderService {
     public CreatePurchaseOrderResponse createPurchaseOrder(CreatePurchaseOrderRequest request){
         var command = new CreatePurchaseOrderCommand();
         command.setId(UUID.randomUUID().toString());
+        command.setCompanyId(request.getCompanyId());
         command.setLimitAmount(request.getLimitAmount());
 
         var orderLines = new ArrayList<PurchaseOrderLine>();
-        var i = 1;
         for(var orderLineDto : request.getPurchaseOrderLines()){
-            var orderLine = PurchaseOrderLine.create(i++,
+            var orderLine = PurchaseOrderLine.create(orderLineDto.getId(),
                     orderLineDto.getPartId(),
                     orderLineDto.getUnit(),
                     orderLineDto.getUnitPrice());
@@ -53,10 +52,9 @@ public class PurchaseOrderService {
         var command = new AddOrderLinesCommand();
         command.setId(id);
         var orderLines = new ArrayList<PurchaseOrderLine>();
-        var i = 1;
         for(var orderLineDto : request.getOrderLines()){
             var orderLine = PurchaseOrderLine.create(
-                    i++,
+                    orderLineDto.getId(),
                     orderLineDto.getPartId(),
                     orderLineDto.getUnit(),
                     orderLineDto.getUnitPrice());
@@ -113,16 +111,9 @@ public class PurchaseOrderService {
         purchaseOrderRepository.save(purchaseOrder);
     }
 
-    public List<PurchaseOrderDto> getPurchaseOrders(){
-        var line = new PurchaseOrderLineDto();
-        line.setId(1);
-        line.setPartId("1");
-        line.setUnit(2);
-        line.setUnitPrice(BigDecimal.valueOf(250));
-        var po = new PurchaseOrderDto();
-        po.setId(UUID.randomUUID().toString());
-        po.setOrderLines(Collections.singletonList(line));
-        return Collections.singletonList(po);
+    public Slice<PurchaseOrderDto> findPurchaseOrderByCompanyId(String companyId, int page, int size, Sort sort){
+        var pageable = Pageable.from(page, size, sort);
+        return purchaseOrderRepository.findPurchaseOrderDtoByCompanyId(companyId, pageable);
     }
 
     private PurchaseOrder fetchOrderById(String id){

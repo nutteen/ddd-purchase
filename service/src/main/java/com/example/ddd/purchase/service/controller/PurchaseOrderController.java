@@ -2,13 +2,15 @@ package com.example.ddd.purchase.service.controller;
 
 import com.example.ddd.purchase.domain.model.query.PurchaseOrderDto;
 import com.example.ddd.purchase.service.application.*;
+import io.micronaut.data.model.Slice;
+import io.micronaut.data.model.Sort;
 import io.micronaut.http.annotation.*;
 import io.micronaut.validation.Validated;
 import jakarta.inject.Inject;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
-import java.util.List;
+import java.util.Optional;
 
 @Controller("/purchase-orders")
 @Validated
@@ -48,7 +50,10 @@ public class PurchaseOrderController {
     }
 
     @Get
-    public List<PurchaseOrderDto> getPurchaseOrders(){
-        return purchaseOrderService.getPurchaseOrders();
+    public Slice<PurchaseOrderDto> findSliceByCompanyId(@QueryValue String companyId,
+                                                           @QueryValue Optional<Integer> page,
+                                                           @QueryValue Optional<Integer> size,
+                                                           @QueryValue Optional<Sort> sort){
+        return purchaseOrderService.findPurchaseOrderByCompanyId(companyId, page.orElse(0), size.orElse(10), sort.orElse(Sort.unsorted()));
     }
 }

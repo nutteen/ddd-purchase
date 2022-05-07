@@ -5,7 +5,7 @@
     <parent>
         <artifactId>purchase</artifactId>
         <groupId>com.example.ddd</groupId>
-        <version>0.1</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

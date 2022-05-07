@@ -13,26 +13,28 @@ import java.util.stream.Collectors;
 
 public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
     private final String id;
+    private final String companyId;
     private final List<PurchaseOrderLine> orderLines;
     private final BigDecimal limitAmount;
     private BigDecimal totalAmount;
     private Long version;
 
-    private PurchaseOrder(String id, BigDecimal limitAmount){
+    private PurchaseOrder(String id, String companyId, BigDecimal limitAmount){
         this.id = id;
+        this.companyId = companyId;
         this.orderLines = new ArrayList<>();
         this.totalAmount = BigDecimal.ZERO;
         this.limitAmount = limitAmount;
     }
 
     public static PurchaseOrder createWithCommand(CreatePurchaseOrderCommand command){
-        var result = new PurchaseOrder(command.getId(), command.getLimitAmount());
+        var result = new PurchaseOrder(command.getId(), command.getCompanyId(), command.getLimitAmount());
         result.addOrderLines(command.getPurchaseOrderLines());
         return result;
     }
 
     public static PurchaseOrder createWithState(PurchaseOrderEntity state){
-        var result = new PurchaseOrder(state.getId(), state.getLimitAmount());
+        var result = new PurchaseOrder(state.getId(), state.getCompanyId(), state.getLimitAmount());
         result.totalAmount = state.getTotalAmount();
         result.version = state.getVersion();
         for(var orderLineEntity : state.getOrderLines()){
@@ -104,6 +106,7 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
     public PurchaseOrderEntity getState() {
         var result = new PurchaseOrderEntity();
         result.setId(id);
+        result.setCompanyId(companyId);
         result.setLimitAmount(limitAmount);
         result.setTotalAmount(totalAmount);
         result.setVersion(version);
@@ -112,7 +115,6 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
             var orderLineEntity = new PurchaseOrderLineEntity();
             orderLineEntity.setPoId(id);
             orderLineEntity.setId(orderLine.getId());
-            orderLineEntity.setAmount(orderLine.getAmount());
             orderLineEntity.setPartId(orderLine.getPartId());
             orderLineEntity.setUnit(orderLine.getUnit());
             orderLineEntity.setUnitPrice(orderLine.getUnitPrice());
@@ -122,4 +124,7 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
         return result;
     }
 
+    public List<PurchaseOrderLine> getOrderLines() {
+        return orderLines;
+    }
 }

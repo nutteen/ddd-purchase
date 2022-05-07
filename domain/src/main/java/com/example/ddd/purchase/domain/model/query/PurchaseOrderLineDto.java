@@ -2,14 +2,30 @@ package com.example.ddd.purchase.domain.model.query;
 
 import io.micronaut.core.annotation.Introspected;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 @Introspected
 public class PurchaseOrderLineDto {
+    private String poId;
+    @NotBlank
     private Integer id;
-    private String partId;
+    @NotBlank
+    private Integer unit;
+    @NotBlank
+    @Positive
     private BigDecimal unitPrice;
-    private int unit;
+    @NotBlank
+    private String partId;
+
+    public String getPoId() {
+        return poId;
+    }
+
+    public void setPoId(String poId) {
+        this.poId = poId;
+    }
 
     public String getPartId() {
         return partId;
@@ -17,10 +33,6 @@ public class PurchaseOrderLineDto {
 
     public void setPartId(String partId) {
         this.partId = partId;
-    }
-
-    public BigDecimal getAmount() {
-        return unitPrice.multiply(BigDecimal.valueOf(unit));
     }
 
     public Integer getId() {
@@ -39,11 +51,11 @@ public class PurchaseOrderLineDto {
         this.unitPrice = unitPrice;
     }
 
-    public int getUnit() {
+    public Integer getUnit() {
         return unit;
     }
 
-    public void setUnit(int unit) {
+    public void setUnit(Integer unit) {
         this.unit = unit;
     }
 }

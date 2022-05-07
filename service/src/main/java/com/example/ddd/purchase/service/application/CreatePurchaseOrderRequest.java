@@ -13,7 +13,10 @@ public class CreatePurchaseOrderRequest {
     @NotNull
     @Positive
     private BigDecimal limitAmount;
+    @NotNull
     private List<PurchaseOrderLineDto> purchaseOrderLines;
+    @NotNull
+    private String companyId;
 
     public BigDecimal getLimitAmount() {
         return limitAmount;
@@ -29,5 +32,13 @@ public class CreatePurchaseOrderRequest {
 
     public void setPurchaseOrderLines(List<PurchaseOrderLineDto> purchaseOrderLines) {
         this.purchaseOrderLines = purchaseOrderLines;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
     }
 }

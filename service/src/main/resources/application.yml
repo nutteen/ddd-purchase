@@ -7,10 +7,23 @@ datasources:
     driverClassName: org.h2.Driver
     username: sa
     password: ''
-    schema-generate: CREATE_DROP
     dialect: H2
-jpa.default.properties.hibernate.hbm2ddl.auto: update
-jpa.default.entity-scan.packages: com.example.ddd.purchase
+jpa:
+  default:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: none
+        show_sql: true
+    entity-scan:
+      packages:
+        - com.example.ddd.purchase
+
+flyway:
+  datasources:
+    default:
+      enabled: true
+
 netty:
   default:
     allocator:

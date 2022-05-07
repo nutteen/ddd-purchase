@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "purchase_order")
 public class PurchaseOrderEntity {
     @Id
     private String id;
-    @OneToMany(cascade = CascadeType.ALL)
+    private String companyId;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "poId")
     private List<PurchaseOrderLineEntity> orderLines = new ArrayList<>();
     private BigDecimal limitAmount;
@@ -26,6 +28,14 @@ public class PurchaseOrderEntity {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
     }
 
     public List<PurchaseOrderLineEntity> getOrderLines() {

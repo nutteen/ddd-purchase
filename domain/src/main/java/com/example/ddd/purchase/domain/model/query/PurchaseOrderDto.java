@@ -3,12 +3,11 @@ package com.example.ddd.purchase.domain.model.query;
 import io.micronaut.core.annotation.Introspected;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Introspected // require for projection
 public class PurchaseOrderDto {
     private String id;
-    private List<PurchaseOrderLineDto> orderLines;
+    private String companyId;
     private BigDecimal totalAmount;
     private BigDecimal limitAmount;
 
@@ -20,12 +19,12 @@ public class PurchaseOrderDto {
         this.id = id;
     }
 
-    public List<PurchaseOrderLineDto> getOrderLines() {
-        return orderLines;
+    public String getCompanyId() {
+        return companyId;
     }
 
-    public void setOrderLines(List<PurchaseOrderLineDto> orderLines) {
-        this.orderLines = orderLines;
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
     }
 
     public BigDecimal getTotalAmount() {
