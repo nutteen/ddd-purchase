@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <parent>
+    <groupId>io.micronaut</groupId>
+    <artifactId>micronaut-parent</artifactId>
+    <version>3.4.3</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example.ddd</groupId>
+  <artifactId>parent-pom</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <properties>
+    <revision>0.1</revision>
+    <jdk.version>11</jdk.version>
+    <release.version>11</release.version>
+    <micronaut.version>3.4.3</micronaut.version>
+    <micronaut.data.version>3.3.0</micronaut.data.version>
+    <micronaut.runtime>netty</micronaut.runtime>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>central</id>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </repository>
+  </repositories>
+
+</project>
