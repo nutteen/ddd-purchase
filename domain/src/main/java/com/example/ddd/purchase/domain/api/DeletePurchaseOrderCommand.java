@@ -1,12 +1,17 @@
 package com.example.ddd.purchase.domain.api;
 
-
 public class DeletePurchaseOrderCommand {
-    private String id;
+    private final String id;
+
+    private DeletePurchaseOrderCommand(String id) {
+        this.id = id;
+    }
+
+    public static DeletePurchaseOrderCommand create(String id){
+        return new DeletePurchaseOrderCommand(id);
+    }
+
     public String getId() {
         return id;
-    }
-    public void setId(String id) {
-        this.id = id;
     }
 }

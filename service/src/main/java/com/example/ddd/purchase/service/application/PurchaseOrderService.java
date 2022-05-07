@@ -4,6 +4,7 @@ import com.example.ddd.purchase.domain.api.*;
 import com.example.ddd.purchase.domain.model.PurchaseOrder;
 import com.example.ddd.purchase.domain.model.PurchaseOrderLine;
 import com.example.ddd.purchase.domain.model.query.PurchaseOrderDto;
+import com.example.ddd.purchase.domain.model.query.PurchaseOrderLineDto;
 import com.example.ddd.purchase.domain.repository.PurchaseOrderRepository;
 import io.micronaut.data.model.Pageable;
 import io.micronaut.data.model.Slice;
@@ -13,6 +14,7 @@ import jakarta.inject.Singleton;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Singleton
@@ -23,20 +25,9 @@ public class PurchaseOrderService {
 
     @Transactional
     public CreatePurchaseOrderResponse createPurchaseOrder(CreatePurchaseOrderRequest request){
-        var command = new CreatePurchaseOrderCommand();
-        command.setId(UUID.randomUUID().toString());
-        command.setCompanyId(request.getCompanyId());
-        command.setLimitAmount(request.getLimitAmount());
-
-        var orderLines = new ArrayList<PurchaseOrderLine>();
-        for(var orderLineDto : request.getPurchaseOrderLines()){
-            var orderLine = PurchaseOrderLine.create(orderLineDto.getId(),
-                    orderLineDto.getPartId(),
-                    orderLineDto.getUnit(),
-                    orderLineDto.getUnitPrice());
-            orderLines.add(orderLine);
-        }
-        command.setPurchaseOrderLines(orderLines);
+        var command = CreatePurchaseOrderCommand.create(
+                UUID.randomUUID().toString(), request.getCompanyId(), request.getLimitAmount(),
+                createOrderLinesFromDto(request.getPurchaseOrderLines()));
 
         var purchaseOrder = PurchaseOrder.createWithCommand(command);
         purchaseOrderRepository.save(purchaseOrder);
@@ -49,19 +40,7 @@ public class PurchaseOrderService {
 
     @Transactional
     public void addOrderLines(String id, AddOrderLinesRequest request){
-        var command = new AddOrderLinesCommand();
-        command.setId(id);
-        var orderLines = new ArrayList<PurchaseOrderLine>();
-        for(var orderLineDto : request.getOrderLines()){
-            var orderLine = PurchaseOrderLine.create(
-                    orderLineDto.getId(),
-                    orderLineDto.getPartId(),
-                    orderLineDto.getUnit(),
-                    orderLineDto.getUnitPrice());
-            orderLines.add(orderLine);
-        }
-        command.setOrderLines(orderLines);
-
+        var command = AddOrderLinesCommand.create(id, createOrderLinesFromDto(request.getOrderLines()));
         var purchaseOrder = fetchOrderById(command.getId());
         purchaseOrder.handle(command);
         purchaseOrderRepository.save(purchaseOrder);
@@ -69,8 +48,7 @@ public class PurchaseOrderService {
 
     @Transactional
     public void deletePurchaseOrder(String id){
-        var command = new DeletePurchaseOrderCommand();
-        command.setId(id);
+        var command = DeletePurchaseOrderCommand.create(id);
         var purchaseOrder = fetchOrderById(id);
         purchaseOrder.handle(command);
         purchaseOrderRepository.delete(purchaseOrder);
@@ -78,10 +56,7 @@ public class PurchaseOrderService {
 
     @Transactional
     public void deletePurchaseOrderLine(String id, int orderLineId){
-        var command = new DeletePurchaseOrderLineCommand();
-        command.setPoId(id);
-        command.setLineId(orderLineId);
-
+        var command = DeletePurchaseOrderLineCommand.create(id, orderLineId);
         var purchaseOrder = fetchOrderById(command.getPoId());
         purchaseOrder.handle(command);
         purchaseOrderRepository.save(purchaseOrder);
@@ -89,13 +64,8 @@ public class PurchaseOrderService {
 
     @Transactional
     public void editPurchaseOrderLine(String poId, int orderLineId, EditOrderLineRequest request){
-        var command = new EditPurchaseOrderLineCommand();
-        command.setPoId(poId);
-        command.setLineId(orderLineId);
-        command.setUnit(request.getUnit());
-        command.setPartId(request.getPartId());
-        command.setUnitPrice(request.getUnitPrice());
-
+        var command = EditPurchaseOrderLineCommand.create(
+                poId, orderLineId, request.getUnit(), request.getUnitPrice(), request.getPartId());
         var purchaseOrder = fetchOrderById(command.getPoId());
         purchaseOrder.handle(command);
         purchaseOrderRepository.save(purchaseOrder);
@@ -103,17 +73,14 @@ public class PurchaseOrderService {
 
     @Transactional
     public void submitPurchaseOrder(String id){
-        var command = new SubmitPurchaseOrderCommand();
-        command.setId(id);
-
+        var command = SubmitPurchaseOrderCommand.create(id);
         var purchaseOrder = fetchOrderById(command.getId());
         purchaseOrder.handle(command);
         purchaseOrderRepository.save(purchaseOrder);
     }
 
     public Slice<PurchaseOrderDto> findPurchaseOrderByCompanyId(String companyId, int page, int size, Sort sort){
-        var pageable = Pageable.from(page, size, sort);
-        return purchaseOrderRepository.findPurchaseOrderDtoByCompanyId(companyId, pageable);
+        return purchaseOrderRepository.findPurchaseOrderDtoByCompanyId(companyId, Pageable.from(page, size, sort));
     }
 
     private PurchaseOrder fetchOrderById(String id){
@@ -123,5 +90,17 @@ public class PurchaseOrderService {
         } else {
             throw new RuntimeException("Order id: " + id + " not found");
         }
+    }
+
+    private List<PurchaseOrderLine> createOrderLinesFromDto(List<PurchaseOrderLineDto> purchaseOrderLineDtos){
+        var result = new ArrayList<PurchaseOrderLine>();
+        for(var orderLineDto : purchaseOrderLineDtos){
+            var orderLine = PurchaseOrderLine.create(orderLineDto.getId(),
+                    orderLineDto.getPartId(),
+                    orderLineDto.getUnit(),
+                    orderLineDto.getUnitPrice());
+            result.add(orderLine);
+        }
+        return result;
     }
 }

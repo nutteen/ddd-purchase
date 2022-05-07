@@ -5,19 +5,20 @@ import com.example.ddd.purchase.domain.model.PurchaseOrderLine;
 import java.util.List;
 
 public class AddOrderLinesCommand {
-    private String id;
-    private List<PurchaseOrderLine> orderLines;
+    private final String id;
+    private final List<PurchaseOrderLine> orderLines;
 
-    public void setId(String id){
+    private AddOrderLinesCommand(String id, List<PurchaseOrderLine> orderLines){
         this.id = id;
+        this.orderLines = orderLines;
+    }
+
+    public static AddOrderLinesCommand create(String id, List<PurchaseOrderLine> orderLines){
+        return new AddOrderLinesCommand(id, orderLines);
     }
 
     public String getId(){
         return id;
-    }
-
-    public void setOrderLines(List<PurchaseOrderLine> orderLines){
-        this.orderLines = orderLines;
     }
 
     public List<PurchaseOrderLine> getOrderLines(){

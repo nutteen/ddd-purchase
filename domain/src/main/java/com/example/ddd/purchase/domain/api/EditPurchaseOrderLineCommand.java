@@ -3,49 +3,41 @@ package com.example.ddd.purchase.domain.api;
 import java.math.BigDecimal;
 
 public class EditPurchaseOrderLineCommand {
-    private String poId;
-    private int lineId;
-    private int unit;
-    private BigDecimal unitPrice;
-    private String partId;
+    private final String poId;
+    private final int lineId;
+    private final int unit;
+    private final BigDecimal unitPrice;
+    private final String partId;
+
+    private EditPurchaseOrderLineCommand(String poId, int lineId, int unit, BigDecimal unitPrice, String partId) {
+        this.poId = poId;
+        this.lineId = lineId;
+        this.unit = unit;
+        this.unitPrice = unitPrice;
+        this.partId = partId;
+    }
+
+    public static EditPurchaseOrderLineCommand create(String poId, int lineId, int unit, BigDecimal unitPrice, String partId) {
+        return new EditPurchaseOrderLineCommand(poId, lineId, unit, unitPrice, partId);
+    }
 
     public String getPoId() {
         return poId;
-    }
-
-    public void setPoId(String poId) {
-        this.poId = poId;
     }
 
     public int getLineId() {
         return lineId;
     }
 
-    public void setLineId(int lineId) {
-        this.lineId = lineId;
-    }
-
     public int getUnit() {
         return unit;
-    }
-
-    public void setUnit(int unit) {
-        this.unit = unit;
     }
 
     public BigDecimal getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(BigDecimal unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
     public String getPartId() {
         return partId;
-    }
-
-    public void setPartId(String partId) {
-        this.partId = partId;
     }
 }

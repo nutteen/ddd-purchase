@@ -1,13 +1,17 @@
 package com.example.ddd.purchase.domain.api;
 
 public class SubmitPurchaseOrderCommand {
-    private String id;
+    private final String id;
+
+    private SubmitPurchaseOrderCommand(String id) {
+        this.id = id;
+    }
+
+    public static SubmitPurchaseOrderCommand create(String id){
+        return new SubmitPurchaseOrderCommand(id);
+    }
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 }

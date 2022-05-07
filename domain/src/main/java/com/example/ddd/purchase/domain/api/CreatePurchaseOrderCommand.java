@@ -6,13 +6,20 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class CreatePurchaseOrderCommand {
-    private String id;
-    private String companyId;
-    private BigDecimal limitAmount;
-    private List<PurchaseOrderLine> purchaseOrderLines;
+    private final String id;
+    private final String companyId;
+    private final BigDecimal limitAmount;
+    private final List<PurchaseOrderLine> purchaseOrderLines;
 
-    public void setId(String id){
+    private CreatePurchaseOrderCommand(String id, String companyId, BigDecimal limitAmount, List<PurchaseOrderLine> purchaseOrderLines) {
         this.id = id;
+        this.companyId = companyId;
+        this.limitAmount = limitAmount;
+        this.purchaseOrderLines = purchaseOrderLines;
+    }
+
+    public static CreatePurchaseOrderCommand create(String id, String companyId, BigDecimal limitAmount, List<PurchaseOrderLine> purchaseOrderLines){
+        return new CreatePurchaseOrderCommand(id, companyId, limitAmount, purchaseOrderLines);
     }
 
     public String getId(){
@@ -23,20 +30,8 @@ public class CreatePurchaseOrderCommand {
         return companyId;
     }
 
-    public void setCompanyId(String companyId) {
-        this.companyId = companyId;
-    }
-
-    public void setLimitAmount(BigDecimal limitAmount){
-        this.limitAmount = limitAmount;
-    }
-
     public BigDecimal getLimitAmount(){
         return limitAmount;
-    }
-
-    public void setPurchaseOrderLines(List<PurchaseOrderLine> purchaseOrderLines){
-        this.purchaseOrderLines = purchaseOrderLines;
     }
 
     public List<PurchaseOrderLine> getPurchaseOrderLines(){
