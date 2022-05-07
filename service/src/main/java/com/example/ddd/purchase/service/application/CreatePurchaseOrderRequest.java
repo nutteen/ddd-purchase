@@ -3,6 +3,7 @@ package com.example.ddd.purchase.service.application;
 import com.example.ddd.purchase.domain.model.query.PurchaseOrderLineDto;
 import io.micronaut.core.annotation.Introspected;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
@@ -13,8 +14,11 @@ public class CreatePurchaseOrderRequest {
     @NotNull
     @Positive
     private BigDecimal limitAmount;
+
     @NotNull
+    @Valid
     private List<PurchaseOrderLineDto> purchaseOrderLines;
+
     @NotNull
     private String companyId;
 

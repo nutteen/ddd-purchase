@@ -40,6 +40,7 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
         for(var orderLineEntity : state.getOrderLines()){
             var orderLine = PurchaseOrderLine.create(
                     orderLineEntity.getId(),
+                    orderLineEntity.getLineOrder(),
                     orderLineEntity.getPartId(),
                     orderLineEntity.getUnit(),
                     orderLineEntity.getUnitPrice());
@@ -61,7 +62,7 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
 
     public void handle(DeletePurchaseOrderLineCommand command){
         checkEditable();
-        orderLines.remove(command.getLineId());
+        orderLines.remove(command.getLineId()-1);
     }
 
     public void handle(EditPurchaseOrderLineCommand command){
@@ -115,6 +116,7 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
             var orderLineEntity = new PurchaseOrderLineEntity();
             orderLineEntity.setPoId(id);
             orderLineEntity.setId(orderLine.getId());
+            orderLineEntity.setLineOrder(orderLine.getLineOrder());
             orderLineEntity.setPartId(orderLine.getPartId());
             orderLineEntity.setUnit(orderLine.getUnit());
             orderLineEntity.setUnitPrice(orderLine.getUnitPrice());

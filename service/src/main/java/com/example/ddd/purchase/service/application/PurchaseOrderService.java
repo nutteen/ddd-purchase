@@ -100,7 +100,9 @@ public class PurchaseOrderService {
     private List<PurchaseOrderLine> createOrderLinesFromDto(List<PurchaseOrderLineDto> purchaseOrderLineDtos){
         var result = new ArrayList<PurchaseOrderLine>();
         for(var orderLineDto : purchaseOrderLineDtos){
-            var orderLine = PurchaseOrderLine.create(orderLineDto.getId(),
+            var orderLine = PurchaseOrderLine.create(
+                    UUID.randomUUID().toString(),
+                    orderLineDto.getLineOrder(),
                     orderLineDto.getPartId(),
                     orderLineDto.getUnit(),
                     orderLineDto.getUnitPrice());

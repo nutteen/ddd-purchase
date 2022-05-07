@@ -9,10 +9,12 @@ CREATE TABLE purchase_order(
 CREATE INDEX company_idx ON purchase_order(company_id);
 
 CREATE TABLE purchase_order_line (
-    id VARCHAR(36) NOT NULL,
+    id VARCHAR(36) PRIMARY KEY,
     po_id VARCHAR(36) NOT NULL,
+    line_order INT NOT NULL,
     unit INT NOT NULL,
     unit_price DECIMAL(17, 2) NOT NULL,
-    part_id VARCHAR(36) NOT NULL,
-    PRIMARY KEY(po_id, id)
+    part_id VARCHAR(36) NOT NULL
 );
+
+CREATE UNIQUE INDEX po_id_line_order_idx ON purchase_order_line(po_id, line_order);

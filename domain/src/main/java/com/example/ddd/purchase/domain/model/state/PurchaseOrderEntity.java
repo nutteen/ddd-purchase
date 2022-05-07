@@ -11,7 +11,7 @@ public class PurchaseOrderEntity {
     @Id
     private String id;
     private String companyId;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "poId")
     private List<PurchaseOrderLineEntity> orderLines = new ArrayList<>();
     private BigDecimal limitAmount;

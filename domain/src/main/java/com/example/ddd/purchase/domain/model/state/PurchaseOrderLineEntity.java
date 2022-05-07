@@ -1,20 +1,18 @@
 package com.example.ddd.purchase.domain.model.state;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigDecimal;
-import java.util.Objects;
 
 @Entity
 @Table(name = "purchase_order_line")
-@IdClass(PurchaseOrderLineEntity.PurchaseOrderLinePK.class)
 public class PurchaseOrderLineEntity {
     @Id
+    private String id;
     private String poId;
-    @Id
-    private Integer id;
-
-    private int unit;
+    private Integer lineOrder;
+    private Integer unit;
     private BigDecimal unitPrice;
     private String partId;
 
@@ -25,16 +23,28 @@ public class PurchaseOrderLineEntity {
         return poId;
     }
 
-    public void setPoId(String poId) {
-        this.poId = poId;
-    }
-
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
+    }
+
+    public Integer getLineOrder() {
+        return lineOrder;
+    }
+
+    public void setLineOrder(Integer lineOrder) {
+        this.lineOrder = lineOrder;
+    }
+
+    public void setUnit(Integer unit) {
+        this.unit = unit;
+    }
+
+    public void setPoId(String poId) {
+        this.poId = poId;
     }
 
     public int getUnit() {
@@ -59,31 +69,5 @@ public class PurchaseOrderLineEntity {
 
     public void setPartId(String partId) {
         this.partId = partId;
-    }
-
-    public static class PurchaseOrderLinePK implements Serializable {
-        private String poId;
-        private Integer id;
-
-        public PurchaseOrderLinePK(){
-        }
-
-        public PurchaseOrderLinePK(String poId, Integer id) {
-            this.poId = poId;
-            this.id = id;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof PurchaseOrderLinePK)) return false;
-            PurchaseOrderLinePK that = (PurchaseOrderLinePK) o;
-            return Objects.equals(poId, that.poId) && Objects.equals(id, that.id);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(poId, id);
-        }
     }
 }
