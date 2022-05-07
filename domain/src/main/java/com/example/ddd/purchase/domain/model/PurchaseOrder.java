@@ -66,7 +66,18 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
 
     public void handle(EditPurchaseOrderLineCommand command){
         checkEditable();
-        // TODO
+        if(orderLines.containsKey(command.getLineId())){
+            var orderLine = orderLines.get(command.getLineId());
+            var oldAmount = orderLine.getAmount();
+            orderLine.handle(command);
+
+            var hasAmountChanged = !oldAmount.equals(orderLine.getAmount());
+            if(hasAmountChanged){
+                refreshTotalAmount();
+            }
+        } else {
+            throw new IllegalStateException("line id: " + command.getLineId() + " not found in po: " + command.getPoId());
+        }
     }
 
     public void handle(SubmitPurchaseOrderCommand command){
@@ -76,6 +87,14 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
     private void checkEditable(){
         // TODO: add a proper state check
 
+    }
+
+    private void refreshTotalAmount(){
+        this.totalAmount = orderLines
+                .values()
+                .stream()
+                .map(PurchaseOrderLine::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private void addOrderLines(List<PurchaseOrderLine> orderLines){

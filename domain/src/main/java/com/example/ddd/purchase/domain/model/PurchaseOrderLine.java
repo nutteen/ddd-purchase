@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class PurchaseOrderLine {
     private final String id;
-    private final int lineOrder;
+    private int lineOrder;
     private int unit;
     private BigDecimal unitPrice;
     private String partId;
@@ -34,7 +34,24 @@ public class PurchaseOrderLine {
     }
 
     public void handle(EditPurchaseOrderLineCommand command){
+        Objects.requireNonNull(command.getUnit());
+        Objects.requireNonNull(command.getUnitPrice());
+        Objects.requireNonNull(command.getPartId());
+        Objects.requireNonNull(command.getLineOrder());
+        if(command.getUnit() <= 0){
+            throw new IllegalStateException("Unit must be > 0");
+        }
+        if(command.getUnitPrice().compareTo(BigDecimal.ZERO) <= 0){
+            throw new IllegalStateException("Unit price must be > 0");
+        }
+        if(command.getLineOrder() <= 0){
+            throw new IllegalStateException("line order must be > 0");
+        }
 
+        this.unit = command.getUnit();
+        this.unitPrice = command.getUnitPrice();
+        this.partId = command.getPartId();
+        this.lineOrder = command.getLineOrder();
     }
 
     public String getId() {

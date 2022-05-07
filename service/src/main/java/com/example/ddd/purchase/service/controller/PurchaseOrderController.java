@@ -11,7 +11,6 @@ import io.micronaut.validation.Validated;
 import jakarta.inject.Inject;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 import java.util.Optional;
 
 @Controller("/purchase-orders")
@@ -52,7 +51,7 @@ public class PurchaseOrderController {
     }
 
     @Put("/{id}/order-lines/{orderLineId}")
-    public void editOrderLine(String id, @Positive int orderLineId, @Body @Valid EditOrderLineRequest request){
+    public void editOrderLine(String id, String orderLineId, @Body @Valid EditOrderLineRequest request){
         purchaseOrderService.editPurchaseOrderLine(id, orderLineId, request);
     }
 

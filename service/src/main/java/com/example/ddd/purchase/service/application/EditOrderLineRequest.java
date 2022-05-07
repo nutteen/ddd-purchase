@@ -3,18 +3,29 @@ package com.example.ddd.purchase.service.application;
 import io.micronaut.core.annotation.Introspected;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 @Introspected
 public class EditOrderLineRequest {
-    @NotEmpty
+    @NotNull
+    private Integer lineOrder;
+    @NotNull
     private Integer unit;
-    @NotEmpty
+    @NotNull
     @Positive
     private BigDecimal unitPrice;
     @NotEmpty
     private String partId;
+
+    public Integer getLineOrder() {
+        return lineOrder;
+    }
+
+    public void setLineOrder(Integer lineOrder) {
+        this.lineOrder = lineOrder;
+    }
 
     public Integer getUnit() {
         return unit;

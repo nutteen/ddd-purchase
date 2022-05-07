@@ -64,9 +64,9 @@ public class PurchaseOrderService {
     }
 
     @Transactional
-    public void editPurchaseOrderLine(String poId, int orderLineId, EditOrderLineRequest request){
+    public void editPurchaseOrderLine(String poId, String orderLineId, EditOrderLineRequest request){
         var command = EditPurchaseOrderLineCommand.create(
-                poId, orderLineId, request.getUnit(), request.getUnitPrice(), request.getPartId());
+                poId, orderLineId, request.getLineOrder(), request.getUnit(), request.getUnitPrice(), request.getPartId());
         var purchaseOrder = fetchOrderById(command.getPoId());
         purchaseOrder.handle(command);
         purchaseOrderRepository.save(purchaseOrder);
