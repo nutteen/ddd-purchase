@@ -1,5 +1,7 @@
 package com.example.ddd.purchase.domain.model.state;
 
+import com.example.ddd.purchase.domain.model.PurchaseOrder;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -20,6 +22,8 @@ public class PurchaseOrderEntity {
     private BigDecimal totalAmount;
     @Version
     private Long version;
+    @Enumerated(EnumType.STRING)
+    private PurchaseOrder.PurchaseOrderState state;
 
     public PurchaseOrderEntity(){
     }
@@ -70,5 +74,13 @@ public class PurchaseOrderEntity {
 
     public void setVersion(Long version) {
         this.version = version;
+    }
+
+    public PurchaseOrder.PurchaseOrderState getState() {
+        return state;
+    }
+
+    public void setState(PurchaseOrder.PurchaseOrderState state) {
+        this.state = state;
     }
 }

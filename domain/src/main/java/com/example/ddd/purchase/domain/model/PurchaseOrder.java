@@ -15,23 +15,25 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
     private final Map<String, PurchaseOrderLine> orderLines = new HashMap<>();
     private final BigDecimal limitAmount;
     private final Long version;
+    private PurchaseOrderState state;
     private BigDecimal totalAmount = BigDecimal.ZERO;
 
-    private PurchaseOrder(String id, String companyId, BigDecimal limitAmount, Long version){
+    private PurchaseOrder(String id, String companyId, BigDecimal limitAmount, PurchaseOrderState state, Long version){
         this.id = id;
         this.companyId = companyId;
         this.limitAmount = limitAmount;
         this.version = version;
+        this.state = state;
     }
 
     public static PurchaseOrder createWithCommand(CreatePurchaseOrderCommand command){
-        var result = new PurchaseOrder(command.getId(), command.getCompanyId(), command.getLimitAmount(), null);
+        var result = new PurchaseOrder(command.getId(), command.getCompanyId(), command.getLimitAmount(), PurchaseOrderState.CREATED, null);
         result.addOrderLines(command.getPurchaseOrderLines());
         return result;
     }
 
     public static PurchaseOrder createWithState(PurchaseOrderEntity state){
-        var result = new PurchaseOrder(state.getId(), state.getCompanyId(), state.getLimitAmount(), state.getVersion());
+        var result = new PurchaseOrder(state.getId(), state.getCompanyId(), state.getLimitAmount(), state.getState(), state.getVersion());
         result.totalAmount = state.getTotalAmount();
         for(var orderLineEntity : state.getOrderLines()){
             var orderLine = PurchaseOrderLine.create(
@@ -81,12 +83,16 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
     }
 
     public void handle(SubmitPurchaseOrderCommand command){
-        // TODO
+        if(state == PurchaseOrderState.SUBMITTED){
+            throw new IllegalStateException("PO was submitted already, and can't be submitted again");
+        }
+        state = PurchaseOrderState.SUBMITTED;
     }
 
     private void checkEditable(){
-        // TODO: add a proper state check
-
+        if(state == PurchaseOrderState.SUBMITTED){
+            throw new IllegalStateException("Submitted PO can't be modified or deleted");
+        }
     }
 
     private void refreshTotalAmount(){
@@ -128,6 +134,7 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
         result.setLimitAmount(limitAmount);
         result.setTotalAmount(totalAmount);
         result.setVersion(version);
+        result.setState(state);
         var orderLineEntities = new ArrayList<PurchaseOrderLineEntity>();
         for(var orderLineEntry : orderLines.entrySet()){
             var orderLine = orderLineEntry.getValue();
@@ -142,5 +149,9 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
         }
         result.setOrderLines(orderLineEntities);
         return result;
+    }
+
+    public enum PurchaseOrderState {
+        CREATED, SUBMITTED
     }
 }

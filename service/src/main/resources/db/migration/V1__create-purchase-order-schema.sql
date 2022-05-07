@@ -3,6 +3,7 @@ CREATE TABLE purchase_order(
     company_id VARCHAR(36) NOT NULL,
     limit_amount DECIMAL(17, 2) NOT NULL,
     total_amount DECIMAL(17, 2) NOT NULL,
+    state VARCHAR(30) NOT NULL,
     version BIGINT
 );
 

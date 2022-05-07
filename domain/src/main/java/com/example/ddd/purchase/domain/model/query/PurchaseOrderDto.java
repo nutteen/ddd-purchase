@@ -1,5 +1,6 @@
 package com.example.ddd.purchase.domain.model.query;
 
+import com.example.ddd.purchase.domain.model.PurchaseOrder;
 import io.micronaut.core.annotation.Introspected;
 
 import java.math.BigDecimal;
@@ -11,6 +12,7 @@ public class PurchaseOrderDto {
     private BigDecimal totalAmount;
     private BigDecimal limitAmount;
     private Integer version;
+    private PurchaseOrder.PurchaseOrderState state;
 
     public String getId() {
         return id;
@@ -50,5 +52,13 @@ public class PurchaseOrderDto {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public PurchaseOrder.PurchaseOrderState getState() {
+        return state;
+    }
+
+    public void setState(PurchaseOrder.PurchaseOrderState state) {
+        this.state = state;
     }
 }
