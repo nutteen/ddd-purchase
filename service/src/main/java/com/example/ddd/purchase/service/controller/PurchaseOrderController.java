@@ -1,6 +1,7 @@
 package com.example.ddd.purchase.service.controller;
 
 import com.example.ddd.purchase.domain.model.query.PurchaseOrderDto;
+import com.example.ddd.purchase.domain.model.query.PurchaseOrderLineDto;
 import com.example.ddd.purchase.service.application.*;
 import io.micronaut.data.model.Slice;
 import io.micronaut.data.model.Sort;
@@ -61,10 +62,18 @@ public class PurchaseOrderController {
     }
 
     @Get
-    public Slice<PurchaseOrderDto> findSliceByCompanyId(@QueryValue String companyId,
-                                                           @QueryValue Optional<Integer> page,
-                                                           @QueryValue Optional<Integer> size,
-                                                           @QueryValue Optional<Sort> sort){
+    public Slice<PurchaseOrderDto> findPOSliceByCompanyId(@QueryValue String companyId,
+                                                          @QueryValue Optional<Integer> page,
+                                                          @QueryValue Optional<Integer> size,
+                                                          @QueryValue Optional<Sort> sort){
         return purchaseOrderService.findPurchaseOrderByCompanyId(companyId, page.orElse(0), size.orElse(10), sort.orElse(Sort.unsorted()));
+    }
+
+    @Get("/{id}/order-lines")
+    public Slice<PurchaseOrderLineDto> findOrderLineSliceByPO(String id,
+                                                              @QueryValue Optional<Integer> page,
+                                                              @QueryValue Optional<Integer> size,
+                                                              @QueryValue Optional<Sort> sort){
+        return purchaseOrderService.findOrderLineSliceByPO(id, page.orElse(0), size.orElse(10), sort.orElse(Sort.unsorted()));
     }
 }

@@ -86,6 +86,9 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
         if(state == PurchaseOrderState.SUBMITTED){
             throw new IllegalStateException("PO was submitted already, and can't be submitted again");
         }
+        if(orderLines.isEmpty()){
+            throw new IllegalStateException("Can't submit PO without any order lines");
+        }
         state = PurchaseOrderState.SUBMITTED;
     }
 

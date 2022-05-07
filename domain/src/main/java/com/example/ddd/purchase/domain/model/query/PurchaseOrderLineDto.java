@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 @Introspected
 public class PurchaseOrderLineDto {
     private String id;
-    private String poId;
     @NotNull
     private Integer lineOrder;
     @NotNull
@@ -21,12 +20,15 @@ public class PurchaseOrderLineDto {
     @NotBlank
     private String partId;
 
-    public String getPoId() {
-        return poId;
+    public PurchaseOrderLineDto(){
     }
 
-    public void setPoId(String poId) {
-        this.poId = poId;
+    public PurchaseOrderLineDto(String id, Integer lineOrder, Integer unit, BigDecimal unitPrice, String partId) {
+        this.id = id;
+        this.lineOrder = lineOrder;
+        this.unit = unit;
+        this.unitPrice = unitPrice;
+        this.partId = partId;
     }
 
     public String getPartId() {

@@ -110,4 +110,8 @@ public class PurchaseOrderService {
         }
         return result;
     }
+
+    public Slice<PurchaseOrderLineDto> findOrderLineSliceByPO(String poId, int page, int size, Sort sort) {
+        return purchaseOrderRepository.findOrderLineSliceByPO(poId, Pageable.from(page, size, sort));
+    }
 }

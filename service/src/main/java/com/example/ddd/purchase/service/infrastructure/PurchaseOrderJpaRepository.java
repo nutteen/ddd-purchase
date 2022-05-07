@@ -2,6 +2,7 @@ package com.example.ddd.purchase.service.infrastructure;
 
 import com.example.ddd.purchase.domain.model.PurchaseOrder;
 import com.example.ddd.purchase.domain.model.query.PurchaseOrderDto;
+import com.example.ddd.purchase.domain.model.query.PurchaseOrderLineDto;
 import com.example.ddd.purchase.domain.repository.PurchaseOrderRepository;
 import io.micronaut.data.model.Pageable;
 import io.micronaut.data.model.Slice;
@@ -76,5 +77,10 @@ public class PurchaseOrderJpaRepository implements PurchaseOrderRepository {
     @Override
     public Slice<PurchaseOrderDto> findPurchaseOrderDtoByCompanyId(String companyId, Pageable pageable) {
         return purchaseOrderEntityRepository.findByCompanyId(companyId, pageable);
+    }
+
+    @Override
+    public Slice<PurchaseOrderLineDto> findOrderLineSliceByPO(String poId, Pageable pageable) {
+        return purchaseOrderLineEntityRepository.findAllByPurchaseOrderId(poId, pageable);
     }
 }

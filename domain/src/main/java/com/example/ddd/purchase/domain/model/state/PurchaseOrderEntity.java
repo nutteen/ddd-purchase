@@ -16,7 +16,8 @@ public class PurchaseOrderEntity {
     @OneToMany(
             mappedBy = "purchaseOrder",
             cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER)
+            fetch = FetchType.EAGER,
+            orphanRemoval = true)
     private List<PurchaseOrderLineEntity> orderLines = new ArrayList<>();
     private BigDecimal limitAmount;
     private BigDecimal totalAmount;
