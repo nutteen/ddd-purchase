@@ -114,7 +114,7 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
         var orderLineEntities = new ArrayList<PurchaseOrderLineEntity>();
         for(var orderLine : orderLines){
             var orderLineEntity = new PurchaseOrderLineEntity();
-            orderLineEntity.setPoId(id);
+            orderLineEntity.setPurchaseOrder(result);
             orderLineEntity.setId(orderLine.getId());
             orderLineEntity.setLineOrder(orderLine.getLineOrder());
             orderLineEntity.setPartId(orderLine.getPartId());

@@ -1,8 +1,6 @@
 package com.example.ddd.purchase.domain.model.state;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
@@ -10,7 +8,9 @@ import java.math.BigDecimal;
 public class PurchaseOrderLineEntity {
     @Id
     private String id;
-    private String poId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private PurchaseOrderEntity purchaseOrder;
     private Integer lineOrder;
     private Integer unit;
     private BigDecimal unitPrice;
@@ -19,8 +19,12 @@ public class PurchaseOrderLineEntity {
     public PurchaseOrderLineEntity(){
     }
 
-    public String getPoId() {
-        return poId;
+    public PurchaseOrderEntity getPurchaseOrder() {
+        return purchaseOrder;
+    }
+
+    public void setPurchaseOrder(PurchaseOrderEntity purchaseOrder) {
+        this.purchaseOrder = purchaseOrder;
     }
 
     public String getId() {
@@ -41,10 +45,6 @@ public class PurchaseOrderLineEntity {
 
     public void setUnit(Integer unit) {
         this.unit = unit;
-    }
-
-    public void setPoId(String poId) {
-        this.poId = poId;
     }
 
     public int getUnit() {
