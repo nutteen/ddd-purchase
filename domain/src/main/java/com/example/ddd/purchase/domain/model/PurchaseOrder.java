@@ -14,25 +14,25 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
     private final String companyId;
     private final Map<String, PurchaseOrderLine> orderLines = new HashMap<>();
     private final BigDecimal limitAmount;
+    private final Long version;
     private BigDecimal totalAmount = BigDecimal.ZERO;
-    private Long version;
 
-    private PurchaseOrder(String id, String companyId, BigDecimal limitAmount){
+    private PurchaseOrder(String id, String companyId, BigDecimal limitAmount, Long version){
         this.id = id;
         this.companyId = companyId;
         this.limitAmount = limitAmount;
+        this.version = version;
     }
 
     public static PurchaseOrder createWithCommand(CreatePurchaseOrderCommand command){
-        var result = new PurchaseOrder(command.getId(), command.getCompanyId(), command.getLimitAmount());
+        var result = new PurchaseOrder(command.getId(), command.getCompanyId(), command.getLimitAmount(), null);
         result.addOrderLines(command.getPurchaseOrderLines());
         return result;
     }
 
     public static PurchaseOrder createWithState(PurchaseOrderEntity state){
-        var result = new PurchaseOrder(state.getId(), state.getCompanyId(), state.getLimitAmount());
+        var result = new PurchaseOrder(state.getId(), state.getCompanyId(), state.getLimitAmount(), state.getVersion());
         result.totalAmount = state.getTotalAmount();
-        result.version = state.getVersion();
         for(var orderLineEntity : state.getOrderLines()){
             var orderLine = PurchaseOrderLine.create(
                     orderLineEntity.getId(),
