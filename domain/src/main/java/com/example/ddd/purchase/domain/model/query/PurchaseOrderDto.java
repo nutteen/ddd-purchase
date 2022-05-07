@@ -10,6 +10,7 @@ public class PurchaseOrderDto {
     private String companyId;
     private BigDecimal totalAmount;
     private BigDecimal limitAmount;
+    private Integer version;
 
     public String getId() {
         return id;
@@ -41,5 +42,13 @@ public class PurchaseOrderDto {
 
     public void setLimitAmount(BigDecimal limitAmount) {
         this.limitAmount = limitAmount;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 }

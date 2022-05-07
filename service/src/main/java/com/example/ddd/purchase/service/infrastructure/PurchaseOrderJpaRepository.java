@@ -8,9 +8,9 @@ import io.micronaut.data.model.Slice;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
+import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Singleton
 public class PurchaseOrderJpaRepository implements PurchaseOrderRepository {
@@ -18,35 +18,41 @@ public class PurchaseOrderJpaRepository implements PurchaseOrderRepository {
     @Inject
     PurchaseOrderEntityRepository purchaseOrderEntityRepository;
     @Inject
-    PurchaseOrderLineEntityRepository purchaseOrderLineEntityRepository;
+    EntityManager entityManager;
 
     @Override
     public void save(PurchaseOrder purchaseOrder) {
-        purchaseOrderEntityRepository.save(purchaseOrder.getState());
+        var state = purchaseOrder.getState();
+        if(state.getVersion() == null){
+            entityManager.persist(state);
+        } else {
+            entityManager.merge(state);
+        }
     }
 
     @Override
     public void saveAll(Collection<PurchaseOrder> purchaseOrders) {
-        var purchaseOrderStates = purchaseOrders
-                .stream()
-                .map(PurchaseOrder::getState);
-        purchaseOrderEntityRepository.saveAll(purchaseOrderStates.collect(Collectors.toList()));
+        for(var purchaseOrder : purchaseOrders){
+            entityManager.merge(purchaseOrder.getState());
+        }
     }
 
     @Override
     public Optional<PurchaseOrder> findById(String id) {
-        return purchaseOrderEntityRepository
-                .findById(id)
-                .map(PurchaseOrder::createWithState);
+        var optionalState = purchaseOrderEntityRepository
+                .findById(id);
+        if(optionalState.isPresent()){
+            var state = optionalState.get();
+            entityManager.detach(state);
+            return Optional.of(PurchaseOrder.createWithState(state));
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
     public void delete(PurchaseOrder purchaseOrder) {
-        // delete child
-        for(var orderLine : purchaseOrder.getOrderLines()){
-            purchaseOrderLineEntityRepository.deleteById(orderLine.getId());
-        }
-        // delete aggregate root
+        // delete aggregate root, cascading to the child
         purchaseOrderEntityRepository.deleteById(purchaseOrder.getId());
     }
 

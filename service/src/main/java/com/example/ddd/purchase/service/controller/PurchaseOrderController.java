@@ -26,7 +26,7 @@ public class PurchaseOrderController {
         return purchaseOrderService.createPurchaseOrder(request);
     }
 
-    @Post("/{id}/order-lines")
+    @Post("/{id}/add-order-lines")
     public void addOrderLines(String id, @Body @Valid AddOrderLinesRequest request){
         purchaseOrderService.addOrderLines(id, request);
     }
