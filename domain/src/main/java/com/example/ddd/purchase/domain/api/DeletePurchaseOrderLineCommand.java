@@ -2,14 +2,14 @@ package com.example.ddd.purchase.domain.api;
 
 public class DeletePurchaseOrderLineCommand {
     private final String poId;
-    private final int lineId;
+    private final String lineId;
 
-    private DeletePurchaseOrderLineCommand(String poId, int lineId) {
+    private DeletePurchaseOrderLineCommand(String poId, String lineId) {
         this.poId = poId;
         this.lineId = lineId;
     }
 
-    public static DeletePurchaseOrderLineCommand create(String poId, int lineId){
+    public static DeletePurchaseOrderLineCommand create(String poId, String lineId){
         return new DeletePurchaseOrderLineCommand(poId, lineId);
     }
 
@@ -17,7 +17,7 @@ public class DeletePurchaseOrderLineCommand {
         return poId;
     }
 
-    public int getLineId() {
+    public String getLineId() {
         return lineId;
     }
 }

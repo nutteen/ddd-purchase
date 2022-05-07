@@ -47,7 +47,7 @@ public class PurchaseOrderController {
     }
 
     @Delete("/{id}/order-lines/{orderLineId}")
-    public void deleteOrderLine(String id, @Positive int orderLineId){
+    public void deleteOrderLine(String id, String orderLineId){
         purchaseOrderService.deletePurchaseOrderLine(id, orderLineId);
     }
 

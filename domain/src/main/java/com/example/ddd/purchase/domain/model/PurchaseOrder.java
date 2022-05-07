@@ -6,24 +6,20 @@ import com.example.ddd.purchase.domain.model.state.PurchaseOrderEntity;
 import com.example.ddd.purchase.domain.model.state.PurchaseOrderLineEntity;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
     private final String id;
     private final String companyId;
-    private final List<PurchaseOrderLine> orderLines;
+    private final Map<String, PurchaseOrderLine> orderLines = new HashMap<>();
     private final BigDecimal limitAmount;
-    private BigDecimal totalAmount;
+    private BigDecimal totalAmount = BigDecimal.ZERO;
     private Long version;
 
     private PurchaseOrder(String id, String companyId, BigDecimal limitAmount){
         this.id = id;
         this.companyId = companyId;
-        this.orderLines = new ArrayList<>();
-        this.totalAmount = BigDecimal.ZERO;
         this.limitAmount = limitAmount;
     }
 
@@ -44,35 +40,38 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
                     orderLineEntity.getPartId(),
                     orderLineEntity.getUnit(),
                     orderLineEntity.getUnitPrice());
-            result.orderLines.add(orderLine);
+            result.orderLines.put(orderLine.getId(), orderLine);
         }
-        result.orderLines.sort(Comparator.comparing(PurchaseOrderLine::getId));
         return result;
     }
 
     public void handle(AddOrderLinesCommand command){
         checkEditable();
         addOrderLines(command.getOrderLines());
-        // Publish OrderLinesAdded event
     }
 
     public void handle(DeletePurchaseOrderCommand command){
         checkEditable();
+        // TODO
     }
 
     public void handle(DeletePurchaseOrderLineCommand command){
         checkEditable();
-        orderLines.remove(command.getLineId()-1);
+        if(orderLines.containsKey(command.getLineId())){
+            var removedLine = orderLines.remove(command.getLineId());
+            totalAmount = totalAmount.subtract(removedLine.getAmount());
+        } else {
+            throw new IllegalStateException("line id: " + command.getLineId() + " not found in po: " + command.getPoId());
+        }
     }
 
     public void handle(EditPurchaseOrderLineCommand command){
         checkEditable();
-        orderLines.get(command.getLineId())
-                .handle(command);
+        // TODO
     }
 
     public void handle(SubmitPurchaseOrderCommand command){
-
+        // TODO
     }
 
     private void checkEditable(){
@@ -89,9 +88,9 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
         var toBeAmount = totalAmount.add(amountToAdd);
 
         if(limitAmount.compareTo(toBeAmount) >= 0){
-            this.orderLines.addAll(orderLines.stream()
-                    .sorted(Comparator.comparing(PurchaseOrderLine::getId))
-                    .collect(Collectors.toList()));
+            this.orderLines.putAll(
+                    orderLines.stream()
+                            .collect(Collectors.toMap(PurchaseOrderLine::getId, e-> e)));
             totalAmount = toBeAmount;
         } else {
             throw new IllegalStateException("Amount to add exceeds po limit");
@@ -112,7 +111,8 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
         result.setTotalAmount(totalAmount);
         result.setVersion(version);
         var orderLineEntities = new ArrayList<PurchaseOrderLineEntity>();
-        for(var orderLine : orderLines){
+        for(var orderLineEntry : orderLines.entrySet()){
+            var orderLine = orderLineEntry.getValue();
             var orderLineEntity = new PurchaseOrderLineEntity();
             orderLineEntity.setPurchaseOrder(result);
             orderLineEntity.setId(orderLine.getId());
@@ -124,9 +124,5 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
         }
         result.setOrderLines(orderLineEntities);
         return result;
-    }
-
-    public List<PurchaseOrderLine> getOrderLines() {
-        return orderLines;
     }
 }

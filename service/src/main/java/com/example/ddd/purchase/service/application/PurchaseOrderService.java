@@ -56,7 +56,7 @@ public class PurchaseOrderService {
     }
 
     @Transactional
-    public void deletePurchaseOrderLine(String id, int orderLineId){
+    public void deletePurchaseOrderLine(String id, String orderLineId){
         var command = DeletePurchaseOrderLineCommand.create(id, orderLineId);
         var purchaseOrder = fetchOrderById(command.getPoId());
         purchaseOrder.handle(command);
