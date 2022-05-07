@@ -15,6 +15,7 @@ import jakarta.inject.Singleton;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Singleton
@@ -81,6 +82,10 @@ public class PurchaseOrderService {
 
     public Slice<PurchaseOrderDto> findPurchaseOrderByCompanyId(String companyId, int page, int size, Sort sort){
         return purchaseOrderRepository.findPurchaseOrderDtoByCompanyId(companyId, Pageable.from(page, size, sort));
+    }
+
+    public Optional<PurchaseOrderDto> findPurchaseOrderById(String id){
+        return purchaseOrderRepository.findPurchaseOrderDtoById(id);
     }
 
     private PurchaseOrder fetchOrderById(String id){

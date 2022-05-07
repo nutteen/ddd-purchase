@@ -4,7 +4,9 @@ import com.example.ddd.purchase.domain.model.query.PurchaseOrderDto;
 import com.example.ddd.purchase.service.application.*;
 import io.micronaut.data.model.Slice;
 import io.micronaut.data.model.Sort;
+import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
+import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.validation.Validated;
 import jakarta.inject.Inject;
 
@@ -27,6 +29,16 @@ public class PurchaseOrderController {
     @Post("/{id}/order-lines")
     public void addOrderLines(String id, @Body @Valid AddOrderLinesRequest request){
         purchaseOrderService.addOrderLines(id, request);
+    }
+
+    @Get("/{id}")
+    public PurchaseOrderDto findByPurchaseOrderById(String id){
+        var optionalPurchaseOrder = purchaseOrderService.findPurchaseOrderById(id);
+        if(optionalPurchaseOrder.isPresent()){
+            return optionalPurchaseOrder.get();
+        } else {
+            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Purchase order id: " + id + " not found");
+        }
     }
 
     @Delete("/{id}")
