@@ -1,7 +1,8 @@
 package com.example.ddd.purchase.domain.model;
 
 import com.example.ddd.purchase.domain.api.command.*;
-import com.example.ddd.purchase.domain.common.Aggregate;
+import com.example.ddd.purchase.domain.api.event.PurchaseOrderCreatedEvent;
+import com.example.ddd.purchase.domain.common.AggregateRoot;
 import com.example.ddd.purchase.domain.model.state.PurchaseOrderEntity;
 import com.example.ddd.purchase.domain.model.state.PurchaseOrderLineEntity;
 
@@ -9,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
+public class PurchaseOrder extends AggregateRoot<String, PurchaseOrderEntity> {
     private final String id;
     private final String companyId;
     private final Map<String, PurchaseOrderLine> orderLines = new HashMap<>();
@@ -29,6 +30,9 @@ public class PurchaseOrder implements Aggregate<String, PurchaseOrderEntity> {
     public static PurchaseOrder createWithCommand(CreatePurchaseOrderCommand command){
         var result = new PurchaseOrder(command.getId(), command.getCompanyId(), command.getLimitAmount(), PurchaseOrderState.CREATED, null);
         result.addOrderLines(command.getPurchaseOrderLines());
+        result.registerDomainEvent(PurchaseOrderCreatedEvent.create(
+                result.id, result.companyId, result.limitAmount,
+                command.getPurchaseOrderLines(), result.state, result.totalAmount));
         return result;
     }
 
