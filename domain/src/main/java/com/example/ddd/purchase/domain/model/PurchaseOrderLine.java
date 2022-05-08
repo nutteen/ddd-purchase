@@ -1,6 +1,6 @@
 package com.example.ddd.purchase.domain.model;
 
-import com.example.ddd.purchase.domain.api.EditPurchaseOrderLineCommand;
+import com.example.ddd.purchase.domain.api.command.EditPurchaseOrderLineCommand;
 
 import java.math.BigDecimal;
 import java.util.Objects;

@@ -1,4 +1,4 @@
-package com.example.ddd.purchase.domain.api;
+package com.example.ddd.purchase.domain.api.command;
 
 public class DeletePurchaseOrderLineCommand {
     private final String poId;

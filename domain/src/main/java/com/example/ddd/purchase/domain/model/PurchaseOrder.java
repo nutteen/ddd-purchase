@@ -1,6 +1,6 @@
 package com.example.ddd.purchase.domain.model;
 
-import com.example.ddd.purchase.domain.api.*;
+import com.example.ddd.purchase.domain.api.command.*;
 import com.example.ddd.purchase.domain.common.Aggregate;
 import com.example.ddd.purchase.domain.model.state.PurchaseOrderEntity;
 import com.example.ddd.purchase.domain.model.state.PurchaseOrderLineEntity;

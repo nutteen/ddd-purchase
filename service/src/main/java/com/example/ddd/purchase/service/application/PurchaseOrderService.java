@@ -1,6 +1,6 @@
 package com.example.ddd.purchase.service.application;
 
-import com.example.ddd.purchase.domain.api.*;
+import com.example.ddd.purchase.domain.api.command.*;
 import com.example.ddd.purchase.domain.model.PurchaseOrder;
 import com.example.ddd.purchase.domain.model.PurchaseOrderLine;
 import com.example.ddd.purchase.domain.model.query.PurchaseOrderDto;
