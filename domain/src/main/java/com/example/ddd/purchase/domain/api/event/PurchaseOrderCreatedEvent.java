@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class PurchaseOrderCreatedEvent implements DomainEvent {
+    private final String eventId;
     private final String id;
     private final String companyId;
     private final BigDecimal limitAmount;
@@ -15,7 +16,9 @@ public class PurchaseOrderCreatedEvent implements DomainEvent {
     private final PurchaseOrder.PurchaseOrderState state;
     private final BigDecimal totalAmount;
 
-    public PurchaseOrderCreatedEvent(String id, String companyId, BigDecimal limitAmount, List<PurchaseOrderLine> purchaseOrderLines, PurchaseOrder.PurchaseOrderState state, BigDecimal totalAmount) {
+    public PurchaseOrderCreatedEvent(String eventId, String id, String companyId, BigDecimal limitAmount,
+                                     List<PurchaseOrderLine> purchaseOrderLines, PurchaseOrder.PurchaseOrderState state, BigDecimal totalAmount) {
+        this.eventId = eventId;
         this.id = id;
         this.companyId = companyId;
         this.limitAmount = limitAmount;
@@ -24,8 +27,9 @@ public class PurchaseOrderCreatedEvent implements DomainEvent {
         this.totalAmount = totalAmount;
     }
 
-    public static PurchaseOrderCreatedEvent create(String id, String companyId, BigDecimal limitAmount, List<PurchaseOrderLine> purchaseOrderLines, PurchaseOrder.PurchaseOrderState state, BigDecimal totalAmount){
-        return new PurchaseOrderCreatedEvent(id, companyId, limitAmount, purchaseOrderLines, state, totalAmount);
+    public static PurchaseOrderCreatedEvent create(String eventId, String id, String companyId, BigDecimal limitAmount,
+                                                   List<PurchaseOrderLine> purchaseOrderLines, PurchaseOrder.PurchaseOrderState state, BigDecimal totalAmount){
+        return new PurchaseOrderCreatedEvent(eventId, id, companyId, limitAmount, purchaseOrderLines, state, totalAmount);
     }
 
     public String getId() {
@@ -50,5 +54,10 @@ public class PurchaseOrderCreatedEvent implements DomainEvent {
 
     public BigDecimal getTotalAmount() {
         return totalAmount;
+    }
+
+    @Override
+    public String getEventId() {
+        return eventId;
     }
 }

@@ -31,6 +31,7 @@ public class PurchaseOrder extends AggregateRoot<String, PurchaseOrderEntity> {
         var result = new PurchaseOrder(command.getId(), command.getCompanyId(), command.getLimitAmount(), PurchaseOrderState.CREATED, null);
         result.addOrderLines(command.getPurchaseOrderLines());
         result.registerDomainEvent(PurchaseOrderCreatedEvent.create(
+                UUID.randomUUID().toString(),
                 result.id, result.companyId, result.limitAmount,
                 command.getPurchaseOrderLines(), result.state, result.totalAmount));
         return result;

@@ -1,4 +1,4 @@
-package com.example.ddd.purchase.service.infrastructure;
+package com.example.ddd.purchase.service.infrastructure.repository;
 
 import com.example.ddd.purchase.domain.model.query.PurchaseOrderLineDto;
 import com.example.ddd.purchase.domain.model.state.PurchaseOrderLineEntity;

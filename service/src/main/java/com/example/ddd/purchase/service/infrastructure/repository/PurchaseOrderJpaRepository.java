@@ -1,9 +1,11 @@
-package com.example.ddd.purchase.service.infrastructure;
+package com.example.ddd.purchase.service.infrastructure.repository;
 
 import com.example.ddd.purchase.domain.model.PurchaseOrder;
 import com.example.ddd.purchase.domain.model.query.PurchaseOrderDto;
 import com.example.ddd.purchase.domain.model.query.PurchaseOrderLineDto;
 import com.example.ddd.purchase.domain.repository.PurchaseOrderRepository;
+import com.example.ddd.purchase.service.infrastructure.entity.DomainEventConverter;
+import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.data.model.Pageable;
 import io.micronaut.data.model.Slice;
 import jakarta.inject.Inject;
@@ -22,6 +24,12 @@ public class PurchaseOrderJpaRepository implements PurchaseOrderRepository {
     PurchaseOrderLineEntityRepository purchaseOrderLineEntityRepository;
     @Inject
     EntityManager entityManager;
+    @Inject
+    ApplicationEventPublisher applicationEventPublisher;
+    @Inject
+    DomainEventConverter domainEventConverter;
+    @Inject
+    DomainEventEntityRepository domainEventEntityRepository;
 
     @Override
     public void save(PurchaseOrder purchaseOrder) {
@@ -30,6 +38,17 @@ public class PurchaseOrderJpaRepository implements PurchaseOrderRepository {
             entityManager.persist(state);
         } else {
             entityManager.merge(state);
+        }
+        persistAndPublishDomainEvents(purchaseOrder);
+    }
+
+    private void persistAndPublishDomainEvents(PurchaseOrder purchaseOrder){
+        for(var domainEvent : purchaseOrder.getDomainEvents()){
+            // persist
+            var eventEntity = domainEventConverter.toEntity(domainEvent);
+            domainEventEntityRepository.save(eventEntity);
+            // publish
+            applicationEventPublisher.publishEvent(domainEvent);
         }
     }
 
